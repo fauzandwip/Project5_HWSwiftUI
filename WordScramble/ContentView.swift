@@ -34,6 +34,13 @@ struct ContentView: View {
                 }
             }
             .navigationTitle(rootWord)
+            .toolbar {
+                    Button() {
+                        startGame()
+                    } label: {
+                        Image(systemName: "goforward")
+                    }
+            }
             .onSubmit(addNewWord)
             .onAppear(perform: startGame)
             .alert(errorTitle, isPresented: $showingError) {
