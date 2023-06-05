@@ -8,9 +8,10 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var userWords = [String]()
+    @State private var usedWords = [String]()
     @State private var rootWord = ""
     @State private var newWord = ""
+    @State private var score = 0
     
     @State private var errorTitle = ""
     @State private var errorMessage = ""
@@ -25,7 +26,11 @@ struct ContentView: View {
                 }
                 
                 Section {
-                    ForEach(userWords, id: \.self) { word in
+                    Text("Score: \(score)")
+                        .font(.headline)
+                        .foregroundColor(.teal)
+                    
+                    ForEach(usedWords, id: \.self) { word in
                         HStack {
                             Image(systemName: "\(word.count).circle")
                             Text(word)
@@ -52,6 +57,10 @@ struct ContentView: View {
     }
     
     func startGame() {
+        usedWords.removeAll()
+        score = 0
+        newWord = ""
+        
         if let startWordsURL = Bundle.main.url(forResource: "start", withExtension: "txt") {
             if let startWordsContents = try? String(contentsOf: startWordsURL) {
                 let allWords = startWordsContents.components(separatedBy: "\n")
@@ -95,13 +104,17 @@ struct ContentView: View {
         }
         
         withAnimation {
-            userWords.insert(answer, at: 0)
+            usedWords.insert(answer, at: 0)
         }
         newWord = ""
+        
+        let wordScore = 10
+        let letterScore = answer.count
+        score += wordScore + letterScore
     }
     
     func isOriginal(word: String) -> Bool {
-        !userWords.contains(word)
+        !usedWords.contains(word)
     }
     
     func isPossible(word: String) -> Bool {
