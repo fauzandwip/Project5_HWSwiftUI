@@ -77,6 +77,16 @@ struct ContentView: View {
             return
         }
         
+        guard isLong(word: answer) else {
+            wordError(title: "Word to short", message: "You can't just type under 3 letters")
+            return
+        }
+        
+        guard isNotStartWord(word: answer) else {
+            wordError(title: "Same word", message: "You can't just type the same as the word root.")
+            return
+        }
+        
         withAnimation {
             userWords.insert(answer, at: 0)
         }
@@ -107,6 +117,14 @@ struct ContentView: View {
         let misspelledRange = checker.rangeOfMisspelledWord(in: word, range: range, startingAt: 0, wrap: false, language: "en")
         
         return misspelledRange.location == NSNotFound
+    }
+    
+    func isLong(word: String) -> Bool {
+        return word.count >= 3
+    }
+    
+    func isNotStartWord(word: String) -> Bool {
+        return word != rootWord
     }
     
     func wordError(title: String, message: String) {
