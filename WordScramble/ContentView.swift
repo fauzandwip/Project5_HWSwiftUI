@@ -18,7 +18,6 @@ struct ContentView: View {
                 Section {
                     TextField("Enter your word", text: $newWord)
                         .textInputAutocapitalization(.never)
-                        .onSubmit(addNewWord)
                 }
                 
                 Section {
@@ -31,7 +30,23 @@ struct ContentView: View {
                 }
             }
             .navigationTitle(rootWord)
+            .onSubmit(addNewWord)
+            .onAppear(perform: startGame)
         }
+    }
+    
+    func startGame() {
+        if let startWordsURL = Bundle.main.url(forResource: "start", withExtension: "txt") {
+            if let startWordsContents = try? String(contentsOf: startWordsURL) {
+                let allWords = startWordsContents.components(separatedBy: "\n")
+                
+                rootWord = allWords.randomElement() ?? "silkworm"
+                
+                return
+            }
+        }
+        
+        fatalError("Could not load start.txt from bundle.")
     }
     
     func addNewWord() {
